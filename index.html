@@ -1,0 +1,429 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1">
+<title>Invented Words — LOTR & Avatar</title>
+<style>
+:root {
+  --ink: #1c1917; --muted: #57534e; --line: #e7e5e4; --bg: #fafaf9; --surface: #fff;
+  --primary: #1e4d3d; --primary-fg: #f5f5f4; --accent: #b45309;
+  --font: system-ui, -apple-system, "Segoe UI", sans-serif;
+  --display: Georgia, "Times New Roman", serif;
+}
+* { box-sizing: border-box; }
+body { margin: 0; font-family: var(--font); color: var(--ink); background: var(--bg); line-height: 1.55; }
+a { color: inherit; text-decoration: none; }
+header {
+  position: sticky; top: 0; z-index: 20; border-bottom: 1px solid var(--line);
+  background: color-mix(in srgb, var(--bg) 95%, transparent); backdrop-filter: blur(6px);
+}
+.hdr { max-width: 72rem; margin: 0 auto; padding: .75rem 1rem; display: flex; flex-wrap: wrap; align-items: center; justify-content: space-between; gap: .75rem; }
+.logo { font-family: var(--display); font-size: 1.15rem; font-weight: 600; }
+nav { display: flex; flex-wrap: wrap; gap: .25rem; }
+nav a, nav button {
+  border: 0; background: transparent; cursor: pointer; font: inherit; font-size: .875rem; font-weight: 600;
+  padding: .5rem .75rem; border-radius: .375rem; color: var(--muted);
+}
+nav a.active, nav button.active { background: var(--primary); color: var(--primary-fg); }
+nav a:hover:not(.active), nav button:hover:not(.active) { color: var(--ink); }
+main { max-width: 72rem; margin: 0 auto; padding: 2rem 1rem 3rem; min-height: 70vh; }
+footer { border-top: 1px solid var(--line); }
+.ftr { max-width: 72rem; margin: 0 auto; padding: 1.25rem 1rem; font-size: .875rem; color: var(--muted); }
+.label { font-size: .8rem; font-weight: 600; letter-spacing: .06em; text-transform: uppercase; color: var(--accent); }
+h1 { font-family: var(--display); font-size: clamp(1.75rem, 4vw, 2.75rem); line-height: 1.2; margin: .4rem 0 1rem; }
+h2 { font-family: var(--display); font-size: 1.5rem; margin: 1.75rem 0 .6rem; }
+h3 { font-family: var(--display); margin: 0 0 .35rem; }
+.lead { font-size: 1.1rem; color: var(--muted); max-width: 40rem; }
+.muted { color: var(--muted); }
+.btn {
+  display: inline-flex; align-items: center; min-height: 2.75rem; padding: .5rem 1rem;
+  border-radius: .375rem; font-weight: 600; border: 1px solid transparent; cursor: pointer; font: inherit;
+}
+.btn-primary { background: var(--primary); color: var(--primary-fg); }
+.btn-ghost { background: var(--surface); border-color: var(--line); }
+.row { display: flex; flex-wrap: wrap; gap: .75rem; margin-top: 1.25rem; }
+.facts { display: grid; grid-template-columns: repeat(3, 1fr); gap: 1px; background: var(--line); border: 1px solid var(--line); border-radius: .75rem; overflow: hidden; margin: 1.75rem 0; }
+.fact { background: var(--surface); padding: 1rem; text-align: center; }
+.fact strong { display: block; font-size: 1.35rem; color: var(--primary); }
+.fact span { font-size: .8rem; color: var(--muted); }
+.cards { display: grid; gap: 1rem; margin: 1rem 0; }
+@media (min-width: 560px) { .cards.two { grid-template-columns: 1fr 1fr; } .cards.three { grid-template-columns: 1fr 1fr 1fr; } }
+.card { background: var(--surface); border: 1px solid var(--line); border-radius: .75rem; padding: 1.1rem 1.2rem; }
+.card .world { font-size: .75rem; font-weight: 700; text-transform: uppercase; letter-spacing: .04em; }
+.world-me { color: var(--primary); }
+.world-pa { color: var(--accent); }
+.paths { display: grid; gap: .75rem; margin-top: 1.5rem; }
+@media (min-width: 640px) { .paths { grid-template-columns: 1fr 1fr; } }
+.path { border: 1px solid var(--line); border-radius: .75rem; padding: 1rem 1.1rem; background: var(--surface); cursor: pointer; text-align: left; width: 100%; font: inherit; }
+.path:hover { border-color: var(--primary); }
+.path strong { display: block; font-size: 1.05rem; margin-bottom: .25rem; }
+.page { display: none; }
+.page.active { display: block; }
+table { width: 100%; border-collapse: collapse; background: var(--surface); font-size: .92rem; }
+th, td { border: 1px solid var(--line); padding: .55rem .65rem; text-align: left; vertical-align: top; }
+th { background: var(--primary); color: var(--primary-fg); }
+tr:nth-child(even) td { background: #f5f3ef; }
+.filters { display: flex; flex-wrap: wrap; gap: .5rem; margin: 1rem 0; }
+.filters button, .filters select {
+  min-height: 2.25rem; padding: .35rem .75rem; border-radius: .375rem; border: 1px solid var(--line);
+  background: var(--surface); font: inherit; font-size: .875rem; font-weight: 600; cursor: pointer;
+}
+.filters button.on { background: var(--primary); color: var(--primary-fg); border-color: var(--primary); }
+.term-grid { display: grid; gap: .75rem; margin-top: 1rem; }
+@media (min-width: 640px) { .term-grid { grid-template-columns: 1fr 1fr; } }
+.term { border: 1px solid var(--line); border-radius: .75rem; padding: .9rem 1rem; background: var(--surface); }
+.term .meta { font-size: .8rem; color: var(--muted); font-weight: 600; }
+.bar-row { display: grid; grid-template-columns: 7.5rem 1fr; gap: .5rem; align-items: center; margin: .4rem 0; font-size: .875rem; }
+.bars { display: flex; height: 1rem; border-radius: .25rem; overflow: hidden; background: #eee; max-width: 28rem; }
+.bar-l { background: var(--primary); height: 100%; }
+.bar-a { background: var(--accent); height: 100%; }
+.legend { display: flex; gap: 1rem; font-size: .8rem; margin: .5rem 0 1rem; }
+.legend span::before { content: ""; display: inline-block; width: .7rem; height: .7rem; border-radius: 2px; margin-right: .35rem; vertical-align: middle; }
+.legend .l::before { background: var(--primary); }
+.legend .a::before { background: var(--accent); }
+.quiz-card { border: 1px solid var(--line); border-radius: .75rem; padding: 1.25rem; background: var(--surface); max-width: 40rem; }
+.opt { display: block; width: 100%; text-align: left; margin: .4rem 0; padding: .65rem .85rem; border-radius: .5rem; border: 1px solid var(--line); background: #fff; cursor: pointer; font: inherit; }
+.opt:hover:not(:disabled) { border-color: var(--primary); }
+.opt.correct { background: #dcfce7; border-color: #16a34a; }
+.opt.wrong { background: #fee2e2; border-color: #dc2626; }
+.opt:disabled { cursor: default; }
+.explain { margin-top: .75rem; padding: .75rem; background: #f5f3ef; border-radius: .5rem; font-size: .92rem; }
+.progress { font-size: .875rem; color: var(--muted); margin-bottom: .75rem; }
+.score { font-size: 1.5rem; font-family: var(--display); margin: 1rem 0; }
+.tabs { display: flex; flex-wrap: wrap; gap: .4rem; margin: 1rem 0; }
+.tabs button { min-height: 2.25rem; padding: .35rem .75rem; border-radius: .375rem; border: 1px solid var(--line); background: var(--surface); font: inherit; font-size: .875rem; font-weight: 600; cursor: pointer; }
+.tabs button.on { background: var(--primary); color: var(--primary-fg); border-color: var(--primary); }
+.ol-grid { display: grid; gap: .75rem; }
+@media (min-width: 560px) { .ol-grid { grid-template-columns: 1fr 1fr; } }
+.feat { border: 1px solid var(--line); border-radius: .75rem; padding: 1rem; background: var(--surface); }
+.feat .n { font-size: .8rem; font-weight: 700; color: var(--accent); }
+@media (max-width: 560px) { .facts { grid-template-columns: 1fr; } }
+</style>
+</head>
+<body>
+<header>
+  <div class="hdr">
+    <a href="#home" class="logo" data-nav="home">Invented Words</a>
+    <nav aria-label="Sections">
+      <a href="#home" data-nav="home">Home</a>
+      <a href="#quiz" data-nav="quiz">Quiz</a>
+      <a href="#dictionary" data-nav="dictionary">Dictionary</a>
+      <a href="#study" data-nav="study">Findings</a>
+      <a href="#diary" data-nav="diary">Diary</a>
+    </nav>
+  </div>
+</header>
+<main>
+  <!-- HOME -->
+  <section id="page-home" class="page active">
+    <p class="label">Zerde · Foreign languages · 2026–2027</p>
+    <h1>Invented words in The Lord of the Rings and Avatar</h1>
+    <p class="lead">We compared 40 invented words from Middle-earth and Pandora. We wanted to see how they are formed and what they tell us about each world. This site holds the quiz, the dictionary and the diary we made from that work.</p>
+    <div class="row">
+      <a class="btn btn-primary" href="#quiz" data-nav="quiz">Start the quiz</a>
+      <a class="btn btn-ghost" href="#diary" data-nav="diary">Open the diary</a>
+    </div>
+    <div class="facts">
+      <div class="fact"><strong>55% / 25%</strong><span>Compound words we counted, Middle-earth against Pandora</span></div>
+      <div class="fact"><strong>30% / 10%</strong><span>Place names in the two lists we made</span></div>
+      <div class="fact"><strong>0 / 3</strong><span>Spiritual words: none in Middle-earth, three on Pandora</span></div>
+    </div>
+    <div class="cards two">
+      <article class="card"><p class="world world-me">Middle-earth</p><h3>Mithril</h3><p class="muted">In the film it is a light, strong, silver-coloured metal. We found it rare, valuable, and able to protect its owner.</p></article>
+      <article class="card"><p class="world world-pa">Pandora</p><h3>Unobtanium</h3><p class="muted">In the film, humans mine this mineral. When we looked at the name, we saw that it means something hard to obtain.</p></article>
+    </div>
+    <h2>Explore the site</h2>
+    <div class="paths">
+      <button type="button" class="path" data-nav="quiz"><strong>Quiz</strong><span class="muted">Twelve questions we wrote, then extra practice on formation, origin and meaning.</span></button>
+      <button type="button" class="path" data-nav="dictionary"><strong>Dictionary</strong><span class="muted">All 40 terms we chose, with the world, the category and how we think each word was formed.</span></button>
+      <button type="button" class="path" data-nav="study"><strong>Findings</strong><span class="muted">Where we think the words come from, how they are built, and what our two hypotheses showed.</span></button>
+      <button type="button" class="path" data-nav="diary"><strong>Diary</strong><span class="muted">Our research diary from July to November 2026, including the week we built this site.</span></button>
+    </div>
+  </section>
+
+  <!-- QUIZ -->
+  <section id="page-quiz" class="page">
+    <p class="label">Practice</p>
+    <h1>Vocabulary quiz</h1>
+    <p class="muted">Twelve questions from our project, plus extra practice. Choose an answer, then read the short explanation.</p>
+    <div class="tabs" id="quiz-tabs">
+      <button type="button" class="on" data-set="project">Project quiz (12)</button>
+      <button type="button" data-set="practice">Extra practice</button>
+    </div>
+    <div id="quiz-area"></div>
+  </section>
+
+  <!-- DICTIONARY -->
+  <section id="page-dictionary" class="page">
+    <p class="label">Reference</p>
+    <h1>Dictionary of 40 terms</h1>
+    <p class="muted">Filter by world or by meaning group. Formation and notes are the labels we used in our research.</p>
+    <div class="filters" id="dict-filters">
+      <button type="button" class="on" data-world="all">All worlds</button>
+      <button type="button" data-world="lotr">Middle-earth</button>
+      <button type="button" data-world="avatar">Pandora</button>
+      <select id="cat-filter">
+        <option value="all">All categories</option>
+        <option value="people">People and characters</option>
+        <option value="creatures">Creatures</option>
+        <option value="places">Places</option>
+        <option value="objects">Materials and objects</option>
+        <option value="society">Society, culture and communication</option>
+        <option value="spiritual">Spiritual life</option>
+      </select>
+    </div>
+    <p class="muted" id="dict-count"></p>
+    <div class="term-grid" id="term-grid"></div>
+  </section>
+
+  <!-- STUDY -->
+  <section id="page-study" class="page">
+    <p class="label">What we found</p>
+    <h1>How the two worlds build their words</h1>
+    <p class="muted" style="max-width:40rem">In both lists, constructed languages were our largest source. In Middle-earth we found more older Germanic words and more compounds. On Pandora we found more short Na’vi words, more modern English and more words taken from real cultures.</p>
+    <div class="tabs" id="chart-tabs">
+      <button type="button" class="on" data-chart="origin">Origin</button>
+      <button type="button" data-chart="formation">Formation</button>
+      <button type="button" data-chart="meaning">Meaning</button>
+    </div>
+    <p class="muted">The percentages we calculated for each list of 20 words.</p>
+    <div class="legend"><span class="l">Lord of the Rings</span><span class="a">Avatar</span></div>
+    <div id="chart-area"></div>
+    <div class="cards two" style="margin-top:1.5rem">
+      <article class="card">
+        <h3>Hypothesis 1 — we found support</h3>
+        <p class="muted">We expected more compound words in The Lord of the Rings, and the count agreed with us: 55% against 25% in Avatar. We also found more short Na’vi words in Avatar: 40% against 5%.</p>
+      </article>
+      <article class="card">
+        <h3>Hypothesis 2 — only partly</h3>
+        <p class="muted">We expected more place names in Middle-earth, and that part held: 30% against 10%. Pandora gave us more words for society and spiritual life. Creatures were 30% in both lists, so we can support this hypothesis only in part.</p>
+      </article>
+    </div>
+    <h2>Five questions we asked of every word</h2>
+    <div class="ol-grid" id="features"></div>
+    <h2>Four words we looked at more closely</h2>
+    <div class="cards two" id="spotlight"></div>
+  </section>
+
+  <!-- DIARY -->
+  <section id="page-diary" class="page">
+    <p class="label">Process</p>
+    <h1>Research diary</h1>
+    <p class="muted">Nineteen steps from choosing the topic in July 2026 to testing the website in November 2026.</p>
+    <div style="overflow-x:auto; margin-top:1rem">
+      <table id="diary-table">
+        <thead><tr><th>No.</th><th>Period</th><th>Kind of work</th><th>Description of work</th></tr></thead>
+        <tbody></tbody>
+      </table>
+    </div>
+  </section>
+</main>
+<footer>
+  <div class="ftr">
+    <p>Our research · Amirkhan Nurasyl and Omirbay Akseleu</p>
+    <p>Scientific supervisor: Tulegenova Karlygash · Zerde, 2026–2027</p>
+  </div>
+</footer>
+<script>
+const DATA = {"terms":[{"word":"Hobbit","world":"lotr","category":"people","meaning":"A small, peaceful people of the Shire.","note":"We treated hobbit as a coinage: a new word made for this people.","example":"The hobbit lived in the Shire."},{"word":"Rohirrim","world":"lotr","category":"people","meaning":"The horse-riding people of Rohan.","formation":"Compounding"},{"word":"Gollum","world":"lotr","category":"people","meaning":"A creature who once owned the One Ring.","formation":"Onomatopoeia","note":"In the film the name imitates the coughing sound he makes. We classed it as sound imitation."},{"word":"Sauron","world":"lotr","category":"people","meaning":"The Dark Lord who created the One Ring."},{"word":"Na’vi","world":"avatar","category":"people","meaning":"The blue people of Pandora and their language.","formation":"Basic lexical item"},{"word":"Sky People","world":"avatar","category":"people","meaning":"The Na’vi name for humans.","formation":"Compounding","example":"The Sky People arrived in machines."},{"word":"Orc","world":"lotr","category":"creatures","meaning":"A soldier of the enemy.","formation":"Revival of an old word","note":"We traced this word to older Germanic English."},{"word":"Ent","world":"lotr","category":"creatures","meaning":"A tree-like being that protects the forest.","formation":"Revival of an old word","note":"We found an Old English word for giant behind this name."},{"word":"Warg","world":"lotr","category":"creatures","meaning":"A large wolf-like beast.","formation":"Revival of an old word","note":"We linked this beast to Old Norse vargr."},{"word":"Nazgûl","world":"lotr","category":"creatures","meaning":"The Ringwraiths, servants of the Dark Lord.","formation":"Compounding","note":"We read this as a Black Speech compound: nazg ‘ring’ + gûl ‘wraith’."},{"word":"Balrog","world":"lotr","category":"creatures","meaning":"A powerful fiery demon.","formation":"Compounding"},{"word":"Oliphaunt","world":"lotr","category":"creatures","meaning":"A gigantic elephant-like war animal.","formation":"Revival of an old word","note":"We found a Middle English form of elephant in this name."},{"word":"Ikran","world":"avatar","category":"creatures","meaning":"A flying predator ridden by the Na’vi.","formation":"Basic lexical item","example":"The Na’vi rider flew on an ikran."},{"word":"Mountain banshee","world":"avatar","category":"creatures","meaning":"The human name for an ikran.","formation":"Borrowing","note":"Banshee comes from Irish. In the film this is the human name for an ikran.","example":"The scientists called it a mountain banshee."},{"word":"Toruk","world":"avatar","category":"creatures","meaning":"A very large flying predator.","formation":"Basic lexical item"},{"word":"Direhorse","world":"avatar","category":"creatures","meaning":"A six-legged riding animal.","formation":"Compounding","note":"We split this into two English words: dire + horse.","example":"The hunter rode a direhorse."},{"word":"Viperwolf","world":"avatar","category":"creatures","meaning":"A dangerous pack predator.","formation":"Compounding"},{"word":"Thanator","world":"avatar","category":"creatures","meaning":"A powerful predator of Pandora."},{"word":"Mordor","world":"lotr","category":"places","meaning":"The Black Land, ruled by Sauron.","formation":"Compounding"},{"word":"Gondor","world":"lotr","category":"places","meaning":"A great human kingdom in the south.","formation":"Compounding"},{"word":"Rivendell","world":"lotr","category":"places","meaning":"A hidden valley and Elvish refuge.","formation":"Compounding","example":"The travellers rested in Rivendell."},{"word":"Isengard","world":"lotr","category":"places","meaning":"A fortress where Saruman builds his army.","formation":"Compounding","note":"We found Old English elements here: iron and enclosure."},{"word":"Shire","world":"lotr","category":"places","meaning":"The homeland of the Hobbits.","note":"We recognised an older English word for a district."},{"word":"Khazad-dûm","world":"lotr","category":"places","meaning":"The great underground city of the Dwarves.","formation":"Compounding"},{"word":"Pandora","world":"avatar","category":"places","meaning":"The moon where Avatar takes place.","note":"We traced this name to Greek mythology."},{"word":"Hometree","world":"avatar","category":"places","meaning":"The giant tree home of the Omaticaya clan.","formation":"Compounding"},{"word":"Mithril","world":"lotr","category":"objects","meaning":"A light, strong, silver-coloured metal.","formation":"Compounding","note":"In the film it is rare and valuable, and it can protect its owner.","example":"The hero wore a mithril shirt for protection."},{"word":"Palantír","world":"lotr","category":"objects","meaning":"A seeing-stone that shows distant places.","formation":"Compounding","example":"The wizard looked into the palantír."},{"word":"Lembas","world":"lotr","category":"objects","meaning":"Elvish bread that gives strength to travellers.","formation":"Compounding"},{"word":"Unobtanium","world":"avatar","category":"objects","meaning":"A valuable mineral mined by humans.","formation":"Blending / derivation","note":"We read this as unobtainable + -ium. In the film the name points to human greed and to something hard to obtain.","example":"The company wanted to mine unobtanium."},{"word":"Avatar","world":"avatar","category":"objects","meaning":"A remotely controlled Na’vi-human body.","formation":"Semantic shift","note":"The word already existed. In the film it takes a new meaning: a body that a human controls.","example":"Jake used an avatar to meet the Na’vi."},{"word":"Mellon","world":"lotr","category":"society","meaning":"The Sindarin word for friend.","formation":"Basic lexical item"},{"word":"Olo’eyktan","world":"avatar","category":"society","meaning":"The leader of a Na’vi clan.","formation":"Compounding"},{"word":"Kaltxì","world":"avatar","category":"society","meaning":"A Na’vi greeting meaning hello.","formation":"Basic lexical item"},{"word":"Skxawng","world":"avatar","category":"society","meaning":"A mild Na’vi insult.","formation":"Basic lexical item"},{"word":"Oel ngati kameie","world":"avatar","category":"society","meaning":"A Na’vi greeting meaning I see you.","formation":"Phrase"},{"word":"RDA","world":"avatar","category":"society","meaning":"The corporation that mines Pandora.","formation":"Acronym"},{"word":"Eywa","world":"avatar","category":"spiritual","meaning":"The Great Mother and network of life.","formation":"Basic lexical item","example":"The Na’vi respect Eywa."},{"word":"Tsaheylu","world":"avatar","category":"spiritual","meaning":"The bond between a Na’vi and an animal or tree.","formation":"Basic lexical item","note":"In the film this bond shows trust and the Na’vi relationship with nature.","example":"Tsaheylu connects the rider and the creature."},{"word":"Tsahìk","world":"avatar","category":"spiritual","meaning":"The spiritual leader of a Na’vi clan.","formation":"Basic lexical item"}],"questions":[{"id":"p1","set":"project","topic":"Meaning","prompt":"Mithril is described as:","options":["iron and fire","grey and glitter","stone and land"],"answer":1,"explain":"In the film, mithril is called grey and glitter. When we checked the meaning, we found a light, strong, silver-coloured metal that can protect its owner."},{"id":"p2","set":"project","topic":"Formation","prompt":"Which word is made by joining two English words?","options":["unobtanium","direhorse","tsaheylu"],"answer":1,"explain":"We split direhorse into two English words: dire + horse. Unobtanium is a blend with the ending -ium, and tsaheylu is a short Na’vi word."},{"id":"p3","set":"project","topic":"Meaning","prompt":"What does Mordor mean?","options":["Black Land","Stone-land","Horse-land"],"answer":0,"explain":"In the story, Mordor is the Black Land, ruled by Sauron. We counted it among the place names of Middle-earth."},{"id":"p4","set":"project","topic":"Meaning","prompt":"Ikran and mountain banshee are:","options":["two different creatures","two names for one creature","a plant and an animal"],"answer":1,"explain":"In the film these are two names for one flying creature. Ikran is the Na’vi name, and mountain banshee is the human name. We used the pair to show two ways of seeing the same animal."},{"id":"p5","set":"project","topic":"Formation","prompt":"Which term is an acronym?","options":["Eywa","Gondor","RDA"],"answer":2,"explain":"We read RDA as an acronym: the first letters of the mining corporation. Eywa is a Na’vi name, and Gondor is a place, so neither one is an acronym."},{"id":"p6","set":"project","topic":"Origin","prompt":"Which word comes from an older English word?","options":["Shire","Eywa","RDA"],"answer":0,"explain":"We traced Shire to an older English word for a district. Eywa is a Na’vi word, and RDA is a modern acronym."},{"id":"p7","set":"project","topic":"Formation","prompt":"The ending -ium in unobtanium is also common in names of:","options":["chemical elements","verbs","colours"],"answer":0,"explain":"We noticed that names of chemical elements often end in -ium, as in sodium. Unobtanium follows the same pattern: unobtainable + -ium."},{"id":"p8","set":"project","topic":"Origin","prompt":"Which name comes from Greek mythology?","options":["Pandora","Mellon","Ent"],"answer":0,"explain":"We traced Pandora to Greek mythology. Mellon is the Sindarin word for friend, and ent is an old English word brought back into the story."},{"id":"p9","set":"project","topic":"Meaning","prompt":"Oel ngati kameie means:","options":["Goodbye","I see you","Be careful"],"answer":1,"explain":"In the film this Na’vi greeting means “I see you”. That is the meaning we recorded."},{"id":"p10","set":"project","topic":"Meaning","prompt":"Tsaheylu is connected with:","options":["food","a bond with nature","a place"],"answer":1,"explain":"In the film, tsaheylu is the bond between a Na’vi and an animal or a tree. We placed it in spiritual life because it shows trust and a link with nature."},{"id":"p11","set":"project","topic":"Formation","prompt":"Orc, ent and warg are examples of:","options":["acronyms","Na’vi words","old words brought back"],"answer":2,"explain":"We found that orc, ent and warg are old words brought back into use. They belong to Middle-earth. In our Avatar list this process does not appear."},{"id":"p12","set":"project","topic":"Theory","prompt":"True or false: every fictional word is a completely new English word.","options":["True","False"],"answer":1,"explain":"We decided this is false. A fictional word can be borrowed, revived or built in a familiar way, such as compounding. It does not have to be a completely new English word."},{"id":"x1","set":"practice","topic":"Formation","prompt":"Compounding is more common in which of our lists?","options":["The Lord of the Rings (55%)","Avatar (25%)","The two lists are equal"],"answer":0,"explain":"Our count supported the first hypothesis. Compounding is 55% in The Lord of the Rings and 25% in Avatar."},{"id":"x2","set":"practice","topic":"Formation","prompt":"In our Avatar list, short basic words make up about:","options":["5%","25%","40%"],"answer":2,"explain":"Among our 20 Avatar words, eight are short Na’vi words such as ikran, toruk, Eywa and kaltxì. That is 40%. In Middle-earth we counted only mellon this way, which is 5%."},{"id":"x3","set":"practice","topic":"Formation","prompt":"Which word was revived from an older language?","options":["Eywa","Ent","RDA"],"answer":1,"explain":"We classed ent, orc, warg and oliphaunt as older words brought back into the story. All of them belong to Middle-earth."},{"id":"x4","set":"practice","topic":"Formation","prompt":"When we classified Gollum, we treated the name as:","options":["an acronym","sound imitation","a place name"],"answer":1,"explain":"In the film the name copies a gulping sound. We treated Gollum as sound imitation, not as an acronym or a place."},{"id":"x5","set":"practice","topic":"Meaning","prompt":"What does kaltxì mean?","options":["Goodbye","Hello","Friend"],"answer":1,"explain":"In the film, kaltxì means hello. Mellon, not kaltxì, is the word for friend."},{"id":"x6","set":"practice","topic":"Meaning","prompt":"Olo’eyktan is:","options":["the leader of a Na’vi clan","a flying creature","a mineral"],"answer":0,"explain":"In the film, an olo’eyktan leads a Na’vi clan. We put this word with society and culture, not with creatures or minerals."},{"id":"x7","set":"practice","topic":"Meaning","prompt":"Tsahìk is:","options":["the spiritual leader of a clan","a greeting","a fortress"],"answer":0,"explain":"In the film, the tsahìk is the spiritual leader of a clan. We grouped this word under spiritual life."},{"id":"x8","set":"practice","topic":"Comparison","prompt":"Which category is larger in The Lord of the Rings than in Avatar?","options":["Spiritual life","Places","Society and communication"],"answer":1,"explain":"Place names are larger in our Lord of the Rings list: 30% against 10%. Spiritual life and society are larger in Avatar."},{"id":"x9","set":"practice","topic":"Comparison","prompt":"How many spiritual-life words did we find in The Lord of the Rings?","options":["None (0%)","Three (15%)","Six (30%)"],"answer":0,"explain":"In our Lord of the Rings list we found no spiritual-life words. Eywa, tsaheylu and tsahìk appear only in the Avatar list, where they are 15%."},{"id":"x10","set":"practice","topic":"Comparison","prompt":"Creatures make up what percent of each of our lists?","options":["10%","30%","55%"],"answer":1,"explain":"We counted six creatures in each list of 20, so creatures are 30% in both worlds."},{"id":"x11","set":"practice","topic":"Meaning","prompt":"When we looked at the name unobtanium, we found that it suggests:","options":["a bond with a tree","something difficult to obtain, linked to mining","an Elvish greeting"],"answer":1,"explain":"In the film, unobtanium is a mineral the humans mine. The name itself told us that it is hard to obtain, and we linked that idea to greed."},{"id":"x12","set":"practice","topic":"Meaning","prompt":"Khazad-dûm is:","options":["the underground city of the Dwarves","the Shire","an Elvish valley"],"answer":0,"explain":"In the story, Khazad-dûm is the great underground city of the Dwarves. The Shire is the Hobbits’ home, and Rivendell is the hidden Elvish valley."},{"id":"x13","set":"practice","topic":"Meaning","prompt":"Lembas is:","options":["Elvish bread","a seeing-stone","a wolf-like beast"],"answer":0,"explain":"In the film, lembas is Elvish bread that gives travellers strength. A palantír is the seeing-stone, and a warg is the wolf-like beast."},{"id":"x14","set":"practice","topic":"Meaning","prompt":"Sky People is the Na’vi name for:","options":["the mountain banshees","humans","the toruk"],"answer":1,"explain":"In the film, Sky People is what the Na’vi call humans. We also noted that the name is a compound, so it shows their point of view."},{"id":"x15","set":"practice","topic":"Comparison","prompt":"Our first hypothesis was:","options":["rejected","supported","left untested"],"answer":1,"explain":"We found support for it. The Lord of the Rings has more compounds (55% against 25%). Avatar has more short basic words (40% against 5%)."},{"id":"x16","set":"practice","topic":"Formation","prompt":"Which process did we give the word “avatar”?","options":["semantic shift","acronym","revival of an old word"],"answer":0,"explain":"The word already existed in English. In the film it receives a new meaning: a Na’vi body that a human controls from a distance. We called that a semantic shift."},{"id":"x17","set":"practice","topic":"Meaning","prompt":"Mellon means:","options":["enemy","friend","king"],"answer":1,"explain":"In the film, mellon means friend. It is the only society word we kept in the Middle-earth list."},{"id":"x18","set":"practice","topic":"Meaning","prompt":"A warg is:","options":["a large wolf-like beast","a tree-like being","a horse-lord"],"answer":0,"explain":"In the film, a warg is a large wolf-like beast. An ent is the tree-like being, and the Rohirrim are the horse-riders."},{"id":"x19","set":"practice","topic":"Meaning","prompt":"In the films, Pandora is:","options":["a kingdom in the south","the moon where Avatar takes place","an Elvish refuge"],"answer":1,"explain":"Pandora is the moon where the Avatar films take place. Gondor is the southern kingdom in The Lord of the Rings, and Rivendell is the Elvish refuge."},{"id":"x20","set":"practice","topic":"Theory","prompt":"Which of these is NOT one of the five features we used?","options":["Connotation","Cultural significance","Spelling difficulty"],"answer":2,"explain":"We asked five questions of every word: meaning, semantic category, connotation, cultural significance and contextual meaning. Spelling difficulty was not one of them."},{"id":"x21","set":"practice","topic":"Meaning","prompt":"A direhorse is:","options":["a six-legged riding animal","a fiery demon","a seeing-stone"],"answer":0,"explain":"In the film, a direhorse is a six-legged animal that can be ridden. We also saw that the word joins dire and horse."},{"id":"x22","set":"practice","topic":"Meaning","prompt":"Hometree is:","options":["the giant tree home of the Omaticaya","Sauron’s land","a Dwarf-city"],"answer":0,"explain":"In the film, Hometree is the giant tree where the Omaticaya live. It is one of only two places we listed for Avatar."},{"id":"x23","set":"practice","topic":"Meaning","prompt":"A palantír is:","options":["a seeing-stone","Elvish bread","a mild insult"],"answer":0,"explain":"In the film, a palantír is a seeing-stone that shows distant places. Lembas is the bread, and skxawng is a mild insult."},{"id":"x24","set":"practice","topic":"Origin","prompt":"Constructed languages are the largest source in:","options":["only The Lord of the Rings","only Avatar","both of our lists"],"answer":2,"explain":"Constructed languages were the largest source in both of our lists: 55% for Middle-earth and 50% for Avatar."},{"id":"x25","set":"practice","topic":"Comparison","prompt":"Hypothesis 2 was:","options":["fully rejected","partly supported","about word length only"],"answer":1,"explain":"We could support this only in part. Middle-earth does have more place names, and Avatar does have more society and spiritual words. Creatures, though, are 30% in both lists."}],"diary":[{"n":1,"period":"Early July 2026","work":"With our teacher, we chose the topic for the Zerde competition: invented words in The Lord of the Rings and Avatar. We wrote the research question and the aim.","kind":"Choosing the topic"},{"n":2,"period":"July 2026","work":"We watched The Lord of the Rings film trilogy and wrote down fictional words that matter in the story.","kind":"Observation"},{"n":3,"period":"July 2026","work":"We watched Avatar (2009) and Avatar: The Way of Water (2022). We collected Na’vi words and the English names used by the human characters.","kind":"Observation"},{"n":4,"period":"End of July 2026","work":"We selected our list: 20 terms from Middle-earth and 20 terms from Pandora. Together that is 40 terms.","kind":"Selecting the words"},{"n":5,"period":"Early August 2026","work":"We looked for the information we needed on the Internet. We used dictionaries, etymology pages and Na’vi learning sites.","kind":"Search for information by topic"},{"n":6,"period":"August 2026","work":"We went to the library and found information. We got a lot of valuable information from books on word formation and on Tolkien’s languages.","kind":"Search for information by topic"},{"n":7,"period":"Middle of August 2026","work":"We checked where each word comes from. We marked every term as a constructed language, older English or Norse, modern English, or another real-world source.","kind":"Classification by origin"},{"n":8,"period":"End of August 2026","work":"We grouped the words by formation: compounding, basic lexical items, revival, borrowing, derivation, semantic shift, acronyms and sound imitation.","kind":"Classification by form"},{"n":9,"period":"Early September 2026","work":"We sorted all 40 terms by meaning: people, creatures, places, objects, society and spiritual life.","kind":"Classification by meaning"},{"n":10,"period":"September 2026","work":"We counted the words in each group, calculated the percentages and compared Middle-earth with Pandora.","kind":"Counting and comparison"},{"n":11,"period":"September 2026","work":"We studied four examples more closely: mithril, unobtanium, ikran / mountain banshee and tsaheylu. We looked at meaning, feeling and cultural role.","kind":"Analysis of examples"},{"n":12,"period":"End of September 2026","work":"We checked our two hypotheses. The first was supported. The second was partly supported, because creatures are 30% in both of our lists.","kind":"Checking hypotheses"},{"n":13,"period":"Early October 2026","work":"We wrote the main sections according to the plan: introduction, theoretical background, methodology, results and conclusion.","kind":"Writing our research"},{"n":14,"period":"October 2026","work":"We made a mini-dictionary of 12 words with simple definitions and example sentences for English lessons.","kind":"Mini-dictionary"},{"n":15,"period":"October 2026","work":"We wrote a vocabulary quiz of 12 questions and an answer key. The questions practise meaning, word formation and reading.","kind":"Vocabulary quiz"},{"n":16,"period":"Middle of October 2026","work":"With our teacher, we created a presentation using a computer.","kind":"Make a slide"},{"n":17,"period":"End of October 2026","work":"Our teacher showed us how to fill in our research diary. We checked the dates, the tables and the results.","kind":"Diary filling"},{"n":18,"period":"4 November 2026","work":"We assembled a quiz website for our research. We put the 12-question quiz, extra practice, the dictionary of 40 terms, the comparison and this diary on the site.","kind":"Website assembly"},{"n":19,"period":"November 2026","work":"We tested the quiz on the computer, checked every answer against our notes and prepared the site so it can be used in an English lesson.","kind":"Testing the website"}],"originRows":[{"name":"Constructed language","short":"Constructed","lotr":55,"avatar":50},{"name":"Older English or Norse","short":"Older English","lotr":30,"avatar":0},{"name":"Modern English","short":"Modern English","lotr":15,"avatar":30},{"name":"Other real-world source","short":"Real-world","lotr":0,"avatar":20}],"formationRows":[{"name":"Compounding","short":"Compounding","lotr":55,"avatar":25},{"name":"Basic lexical item","short":"Basic word","lotr":5,"avatar":40},{"name":"Revival of an old word","short":"Revival","lotr":20,"avatar":0},{"name":"Borrowing","short":"Borrowing","lotr":0,"avatar":10},{"name":"Derivation, blending, coinage","short":"Derivation","lotr":10,"avatar":10},{"name":"Semantic shift","short":"Shift","lotr":5,"avatar":5},{"name":"Acronym, sound or phrase","short":"Acronym/sound","lotr":5,"avatar":10}],"meaningRows":[{"name":"People and characters","short":"People","lotr":20,"avatar":10},{"name":"Creatures","short":"Creatures","lotr":30,"avatar":30},{"name":"Places","short":"Places","lotr":30,"avatar":10},{"name":"Materials and objects","short":"Objects","lotr":15,"avatar":10},{"name":"Society and communication","short":"Society","lotr":5,"avatar":25},{"name":"Spiritual life","short":"Spiritual","lotr":0,"avatar":15}],"spotlight":[{"word":"Mithril","world":"Middle-earth","category":"Materials and objects","meaning":"A light, strong silver-coloured metal.","significance":"In the film it is rare and valuable. We found that it can protect its owner."},{"word":"Unobtanium","world":"Pandora","category":"Materials and objects","meaning":"A valuable mineral on Pandora.","significance":"When we analysed the name, we found that it suggests something difficult to obtain, and we linked that to human greed and mining."},{"word":"Ikran / mountain banshee","world":"Pandora","category":"Creatures","meaning":"Two names for the same flying creature.","significance":"We found two names for one creature. In the film they show the Na’vi view and the human view."},{"word":"Tsaheylu","world":"Pandora","category":"Spiritual life","meaning":"A bond between a Na’vi and an animal or tree.","significance":"In the film this is a bond with an animal or a tree. We read it as trust and a relationship with nature."}]};
+
+const categoryLabel = {
+  people: "People and characters",
+  creatures: "Creatures",
+  places: "Places",
+  objects: "Materials and objects",
+  society: "Society, culture and communication",
+  spiritual: "Spiritual life",
+};
+const worldLabel = { lotr: "The Lord of the Rings", avatar: "Avatar" };
+
+function showPage(id) {
+  document.querySelectorAll('.page').forEach(p => p.classList.remove('active'));
+  const el = document.getElementById('page-' + id);
+  if (el) el.classList.add('active');
+  document.querySelectorAll('[data-nav]').forEach(a => {
+    a.classList.toggle('active', a.getAttribute('data-nav') === id);
+  });
+  if (id === 'dictionary') renderDict();
+  if (id === 'quiz') startQuiz(currentSet);
+  if (id === 'study') renderChart(currentChart);
+  if (id === 'diary') renderDiary();
+  window.scrollTo(0, 0);
+}
+
+document.querySelectorAll('[data-nav]').forEach(el => {
+  el.addEventListener('click', e => {
+    e.preventDefault();
+    const id = el.getAttribute('data-nav');
+    location.hash = id;
+    showPage(id);
+  });
+});
+
+window.addEventListener('hashchange', () => {
+  const id = (location.hash || '#home').slice(1) || 'home';
+  showPage(id);
+});
+
+// Dictionary
+let dictWorld = 'all', dictCat = 'all';
+document.querySelectorAll('#dict-filters [data-world]').forEach(btn => {
+  btn.addEventListener('click', () => {
+    dictWorld = btn.dataset.world;
+    document.querySelectorAll('#dict-filters [data-world]').forEach(b => b.classList.toggle('on', b === btn));
+    renderDict();
+  });
+});
+document.getElementById('cat-filter').addEventListener('change', e => {
+  dictCat = e.target.value;
+  renderDict();
+});
+
+function renderDict() {
+  const list = DATA.terms.filter(t => {
+    if (dictWorld !== 'all' && t.world !== dictWorld) return false;
+    if (dictCat !== 'all' && t.category !== dictCat) return false;
+    return true;
+  });
+  document.getElementById('dict-count').textContent = list.length + ' term' + (list.length === 1 ? '' : 's');
+  document.getElementById('term-grid').innerHTML = list.map(t => `
+    <article class="term">
+      <p class="meta">${worldLabel[t.world]} · ${categoryLabel[t.category] || t.category}</p>
+      <h3>${escapeHtml(t.word)}</h3>
+      <p>${escapeHtml(t.meaning)}</p>
+      ${t.formation ? `<p class="muted" style="margin-top:.4rem;font-size:.85rem"><strong>Formation:</strong> ${escapeHtml(t.formation)}</p>` : ''}
+      ${t.note ? `<p class="muted" style="margin-top:.25rem;font-size:.85rem">${escapeHtml(t.note)}</p>` : ''}
+      ${t.example ? `<p class="muted" style="margin-top:.25rem;font-size:.85rem"><em>${escapeHtml(t.example)}</em></p>` : ''}
+    </article>`).join('');
+}
+
+// Quiz
+let currentSet = 'project';
+let quizIndex = 0, quizScore = 0, quizAnswered = false;
+const quizQs = () => DATA.questions.filter(q => q.set === currentSet);
+
+document.querySelectorAll('#quiz-tabs [data-set]').forEach(btn => {
+  btn.addEventListener('click', () => {
+    currentSet = btn.dataset.set;
+    document.querySelectorAll('#quiz-tabs [data-set]').forEach(b => b.classList.toggle('on', b === btn));
+    startQuiz(currentSet);
+  });
+});
+
+function startQuiz(set) {
+  currentSet = set;
+  quizIndex = 0; quizScore = 0; quizAnswered = false;
+  renderQuizQ();
+}
+
+function renderQuizQ() {
+  const qs = quizQs();
+  const area = document.getElementById('quiz-area');
+  if (quizIndex >= qs.length) {
+    area.innerHTML = `<div class="quiz-card">
+      <p class="score">Score: ${quizScore} / ${qs.length}</p>
+      <p class="muted">${quizScore === qs.length ? 'Excellent — every answer matched our notes.' : 'Review the explanations and try again if you like.'}</p>
+      <div class="row"><button type="button" class="btn btn-primary" id="restart-quiz">Restart</button></div>
+    </div>`;
+    document.getElementById('restart-quiz').onclick = () => startQuiz(currentSet);
+    return;
+  }
+  const q = qs[quizIndex];
+  area.innerHTML = `<div class="quiz-card">
+    <p class="progress">Question ${quizIndex + 1} of ${qs.length} · ${escapeHtml(q.topic || '')}</p>
+    <h3 style="font-size:1.2rem;margin-bottom:.75rem">${escapeHtml(q.prompt)}</h3>
+    <div id="opts"></div>
+    <div id="explain"></div>
+    <div class="row" style="margin-top:1rem"><button type="button" class="btn btn-primary" id="next-q" style="display:none">Next</button></div>
+  </div>`;
+  const opts = document.getElementById('opts');
+  q.options.forEach((opt, i) => {
+    const b = document.createElement('button');
+    b.type = 'button';
+    b.className = 'opt';
+    b.textContent = opt;
+    b.onclick = () => {
+      if (quizAnswered) return;
+      quizAnswered = true;
+      const correct = i === q.answer;
+      if (correct) quizScore++;
+      opts.querySelectorAll('.opt').forEach((ob, j) => {
+        ob.disabled = true;
+        if (j === q.answer) ob.classList.add('correct');
+        else if (j === i && !correct) ob.classList.add('wrong');
+      });
+      document.getElementById('explain').innerHTML = `<div class="explain">${escapeHtml(q.explain || '')}</div>`;
+      document.getElementById('next-q').style.display = 'inline-flex';
+    };
+    opts.appendChild(b);
+  });
+  document.getElementById('next-q').onclick = () => {
+    quizIndex++;
+    quizAnswered = false;
+    renderQuizQ();
+  };
+}
+
+// Study charts
+let currentChart = 'origin';
+document.querySelectorAll('#chart-tabs [data-chart]').forEach(btn => {
+  btn.addEventListener('click', () => {
+    currentChart = btn.dataset.chart;
+    document.querySelectorAll('#chart-tabs [data-chart]').forEach(b => b.classList.toggle('on', b === btn));
+    renderChart(currentChart);
+  });
+});
+
+function renderChart(id) {
+  const map = { origin: DATA.originRows, formation: DATA.formationRows, meaning: DATA.meaningRows };
+  const rows = map[id] || DATA.originRows;
+  document.getElementById('chart-area').innerHTML = rows.map(r => {
+    const max = 60;
+    return `<div class="bar-row"><span>${escapeHtml(r.short || r.name)}</span>
+      <div class="bars" title="LOTR ${r.lotr}% · Avatar ${r.avatar}%">
+        <div class="bar-l" style="width:${(r.lotr/max)*100}%"></div>
+        <div class="bar-a" style="width:${(r.avatar/max)*100}%"></div>
+      </div></div>
+      <div style="font-size:.75rem;color:var(--muted);margin:-.2rem 0 .5rem 7.5rem">${r.lotr}% · ${r.avatar}%</div>`;
+  }).join('');
+}
+
+const features = [
+  ["Meaning", "What does the word refer to?"],
+  ["Semantic category", "Person, creature, place, object, social idea or spiritual idea."],
+  ["Connotation", "What feelings or associations does the word create?"],
+  ["Cultural significance", "What does the word tell us about the fictional people?"],
+  ["Contextual meaning", "What role does the word have in the story?"],
+];
+document.getElementById('features').innerHTML = features.map((f, i) =>
+  `<div class="feat"><p class="n">${i+1}</p><h3>${escapeHtml(f[0])}</h3><p class="muted" style="font-size:.9rem">${escapeHtml(f[1])}</p></div>`
+).join('');
+
+document.getElementById('spotlight').innerHTML = DATA.spotlight.map(s => `
+  <article class="card">
+    <p class="world ${s.world.includes('Middle') ? 'world-me' : 'world-pa'}">${escapeHtml(s.world)} · ${escapeHtml(s.category)}</p>
+    <h3>${escapeHtml(s.word)}</h3>
+    <p>${escapeHtml(s.meaning)}</p>
+    <p class="muted" style="margin-top:.5rem;font-size:.9rem">${escapeHtml(s.significance)}</p>
+  </article>`).join('');
+
+function renderDiary() {
+  const tb = document.querySelector('#diary-table tbody');
+  if (tb.children.length) return;
+  tb.innerHTML = DATA.diary.map(d =>
+    `<tr><td>${d.n}</td><td>${escapeHtml(d.period)}</td><td>${escapeHtml(d.kind)}</td><td>${escapeHtml(d.work)}</td></tr>`
+  ).join('');
+}
+
+function escapeHtml(s) {
+  return String(s == null ? '' : s)
+    .replace(/&/g,'&amp;').replace(/</g,'&lt;').replace(/>/g,'&gt;').replace(/"/g,'&quot;');
+}
+
+// init
+const start = (location.hash || '#home').slice(1) || 'home';
+showPage(start);
+</script>
+</body>
+</html>
